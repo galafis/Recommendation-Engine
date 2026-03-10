@@ -1,251 +1,165 @@
-# 🚀 Recommendation Engine
+# Recommendation Engine
 
-> Professional project by Gabriel Demetrios Lafis
+Motor de recomendacao com filtragem colaborativa, baseada em conteudo e hibrida.
 
-[![R](https://img.shields.io/badge/R-4.3-276DC3.svg)](https://img.shields.io/badge/)
-[![Flask](https://img.shields.io/badge/Flask-3.0-000000.svg)](https://img.shields.io/badge/)
-[![NumPy](https://img.shields.io/badge/NumPy-1.26-013243.svg)](https://img.shields.io/badge/)
-[![Pandas](https://img.shields.io/badge/Pandas-2.2-150458.svg)](https://img.shields.io/badge/)
+Recommendation engine with collaborative, content-based, and hybrid filtering.
+
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB.svg)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.0+-000000.svg)](https://flask.palletsprojects.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[English](#english) | [Português](#português)
+[Portugues](#portugues) | [English](#english)
+
+---
+
+## Portugues
+
+### Visao Geral
+
+Sistema de recomendacao que implementa tres abordagens:
+
+- **Filtragem Colaborativa**: Recomenda itens com base na similaridade entre usuarios (cosseno e Pearson).
+- **Filtragem Baseada em Conteudo**: Recomenda itens similares aos que o usuario ja avaliou positivamente, utilizando vetores de caracteristicas.
+- **Recomendacao Hibrida**: Combina ambas as abordagens com pesos configuraveis.
+
+### Arquitetura
+
+```mermaid
+graph TD
+    A[Cliente HTTP] --> B[Flask API]
+    B --> C[HybridRecommender]
+    C --> D[CollaborativeFilter]
+    C --> E[ContentBasedFilter]
+    D --> F[Similaridade entre Usuarios]
+    D --> G[Predicao de Rating]
+    E --> H[Perfil do Usuario]
+    E --> I[Similaridade de Itens]
+
+    style B fill:#0d1117,color:#c9d1d9,stroke:#58a6ff
+    style C fill:#161b22,color:#c9d1d9,stroke:#8b949e
+    style D fill:#161b22,color:#c9d1d9,stroke:#8b949e
+    style E fill:#161b22,color:#c9d1d9,stroke:#8b949e
+```
+
+### Fluxo de Recomendacao
+
+```mermaid
+sequenceDiagram
+    participant U as Usuario
+    participant API as Flask API
+    participant H as HybridRecommender
+    participant CF as CollaborativeFilter
+    participant CB as ContentBasedFilter
+
+    U->>API: GET /api/recommend/user_1
+    API->>H: recommend(user_1, k=10)
+    H->>CF: recommend_items(user_1)
+    CF->>CF: Encontrar usuarios similares
+    CF-->>H: Recomendacoes CF
+    H->>CB: recommend_items(user_1)
+    CB->>CB: Comparar perfil com itens
+    CB-->>H: Recomendacoes CB
+    H->>H: Combinar scores
+    H-->>API: Lista ordenada
+    API-->>U: JSON Response
+```
+
+### Inicio Rapido
+
+```bash
+git clone https://github.com/galafis/Recommendation-Engine.git
+cd Recommendation-Engine
+pip install -r requirements.txt
+python app.py
+```
+
+### Endpoints
+
+| Metodo | Rota | Descricao |
+|--------|------|-----------|
+| POST | `/api/ratings` | Adicionar avaliacao |
+| POST | `/api/items` | Adicionar item com features |
+| GET | `/api/recommend/<user_id>` | Obter recomendacoes |
+| GET | `/api/similar/<item_id>` | Encontrar itens similares |
+| GET | `/api/stats` | Estatisticas do motor |
+
+### Estrutura do Projeto
+
+```
+Recommendation-Engine/
+├── engine.py             # Motores de recomendacao
+├── app.py                # API Flask
+├── tests/
+│   └── test_engine.py    # Testes unitarios
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
 
 ---
 
 ## English
 
-### 🎯 Overview
+### Overview
 
-**Recommendation Engine** is a production-grade R application complemented by CSS, HTML, JavaScript, Python that showcases modern software engineering practices including clean architecture, comprehensive testing, containerized deployment, and CI/CD readiness.
+Recommendation system implementing three approaches:
 
-The codebase comprises **537 lines** of source code organized across **5 modules**, following industry best practices for maintainability, scalability, and code quality.
+- **Collaborative Filtering**: Recommends items based on user similarity (cosine and Pearson).
+- **Content-Based Filtering**: Recommends items similar to those the user has rated positively, using feature vectors.
+- **Hybrid Recommendation**: Combines both approaches with configurable weights.
 
-### ✨ Key Features
-
-- **📐 Clean Architecture**: Modular design with clear separation of concerns
-- **🧪 Test Coverage**: Unit and integration tests for reliability
-- **📚 Documentation**: Comprehensive inline documentation and examples
-- **🔧 Configuration**: Environment-based configuration management
-
-### 🏗️ Architecture
+### Architecture
 
 ```mermaid
-graph TB
-    subgraph Client["🖥️ Client Layer"]
-        A[Web Client]
-        B[API Documentation]
-    end
-    
-    subgraph API["⚡ API Layer"]
-        C[Middleware Pipeline]
-        D[Route Handlers]
-        E[Business Logic]
-    end
-    
-    subgraph Data["💾 Data Layer"]
-        F[(Primary Database)]
-        G[Cache]
-    end
-    
-    A --> C
-    B --> C
-    C --> D --> E
-    E --> F
-    E --> G
-    
-    style Client fill:#e1f5fe
-    style API fill:#f3e5f5
-    style Data fill:#fff3e0
+graph TD
+    A[HTTP Client] --> B[Flask API]
+    B --> C[HybridRecommender]
+    C --> D[CollaborativeFilter]
+    C --> E[ContentBasedFilter]
+    D --> F[User Similarity]
+    D --> G[Rating Prediction]
+    E --> H[User Profile]
+    E --> I[Item Similarity]
+
+    style B fill:#0d1117,color:#c9d1d9,stroke:#58a6ff
+    style C fill:#161b22,color:#c9d1d9,stroke:#8b949e
+    style D fill:#161b22,color:#c9d1d9,stroke:#8b949e
+    style E fill:#161b22,color:#c9d1d9,stroke:#8b949e
 ```
 
-### 🚀 Quick Start
-
-#### Prerequisites
-
-- R 4.3+
-- RStudio (recommended)
-
-#### Installation
+### Quick Start
 
 ```bash
-# Clone the repository
 git clone https://github.com/galafis/Recommendation-Engine.git
 cd Recommendation-Engine
+pip install -r requirements.txt
+python app.py
 ```
 
-```r
-# In R console — install dependencies
-install.packages(c("tidyverse", "shiny", "ggplot2", "forecast"))
+### Endpoints
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | `/api/ratings` | Add a user rating |
+| POST | `/api/items` | Add item with features |
+| GET | `/api/recommend/<user_id>` | Get recommendations |
+| GET | `/api/similar/<item_id>` | Find similar items |
+| GET | `/api/stats` | Engine statistics |
+
+### Tests
+
+```bash
+python -m pytest tests/ -v
 ```
-
-#### Running
-
-```r
-source("main.R")
-# Or for Shiny apps:
-shiny::runApp()
-```
-
-### 📁 Project Structure
-
-```
-Recommendation-Engine/
-├── tests/         # Test suite
-│   └── test_main.R
-├── LICENSE
-├── README.md
-├── analytics.R
-├── app.js
-├── app.py
-└── requirements.txt
-```
-
-### 🛠️ Tech Stack
-
-| Technology | Description | Role |
-|------------|-------------|------|
-| **R** | Core Language | Primary |
-| **Flask** | Lightweight web framework | Framework |
-| **NumPy** | Numerical computing | Framework |
-| **Pandas** | Data manipulation library | Framework |
-| JavaScript | 1 files | Supporting |
-| Python | 1 files | Supporting |
-| HTML | 1 files | Supporting |
-| CSS | 1 files | Supporting |
-
-### 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### 👤 Author
-
-**Gabriel Demetrios Lafis**
-- GitHub: [@galafis](https://github.com/galafis)
-- LinkedIn: [Gabriel Demetrios Lafis](https://linkedin.com/in/gabriel-demetrios-lafis)
 
 ---
 
-## Português
-
-### 🎯 Visão Geral
-
-**Recommendation Engine** é uma aplicação R de nível profissional, complementada por CSS, HTML, JavaScript, Python que demonstra práticas modernas de engenharia de software, incluindo arquitetura limpa, testes abrangentes, implantação containerizada e prontidão para CI/CD.
-
-A base de código compreende **537 linhas** de código-fonte organizadas em **5 módulos**, seguindo as melhores práticas do setor para manutenibilidade, escalabilidade e qualidade de código.
-
-### ✨ Funcionalidades Principais
-
-- **📐 Clean Architecture**: Modular design with clear separation of concerns
-- **🧪 Test Coverage**: Unit and integration tests for reliability
-- **📚 Documentation**: Comprehensive inline documentation and examples
-- **🔧 Configuration**: Environment-based configuration management
-
-### 🏗️ Arquitetura
-
-```mermaid
-graph TB
-    subgraph Client["🖥️ Client Layer"]
-        A[Web Client]
-        B[API Documentation]
-    end
-    
-    subgraph API["⚡ API Layer"]
-        C[Middleware Pipeline]
-        D[Route Handlers]
-        E[Business Logic]
-    end
-    
-    subgraph Data["💾 Data Layer"]
-        F[(Primary Database)]
-        G[Cache]
-    end
-    
-    A --> C
-    B --> C
-    C --> D --> E
-    E --> F
-    E --> G
-    
-    style Client fill:#e1f5fe
-    style API fill:#f3e5f5
-    style Data fill:#fff3e0
-```
-
-### 🚀 Início Rápido
-
-#### Prerequisites
-
-- R 4.3+
-- RStudio (recommended)
-
-#### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/galafis/Recommendation-Engine.git
-cd Recommendation-Engine
-```
-
-```r
-# In R console — install dependencies
-install.packages(c("tidyverse", "shiny", "ggplot2", "forecast"))
-```
-
-#### Running
-
-```r
-source("main.R")
-# Or for Shiny apps:
-shiny::runApp()
-```
-
-### 📁 Estrutura do Projeto
-
-```
-Recommendation-Engine/
-├── tests/         # Test suite
-│   └── test_main.R
-├── LICENSE
-├── README.md
-├── analytics.R
-├── app.js
-├── app.py
-└── requirements.txt
-```
-
-### 🛠️ Stack Tecnológica
-
-| Tecnologia | Descrição | Papel |
-|------------|-----------|-------|
-| **R** | Core Language | Primary |
-| **Flask** | Lightweight web framework | Framework |
-| **NumPy** | Numerical computing | Framework |
-| **Pandas** | Data manipulation library | Framework |
-| JavaScript | 1 files | Supporting |
-| Python | 1 files | Supporting |
-| HTML | 1 files | Supporting |
-| CSS | 1 files | Supporting |
-
-### 🤝 Contribuindo
-
-Contribuições são bem-vindas! Sinta-se à vontade para enviar um Pull Request.
-
-### 📄 Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-### 👤 Autor
+## Autor / Author
 
 **Gabriel Demetrios Lafis**
 - GitHub: [@galafis](https://github.com/galafis)
 - LinkedIn: [Gabriel Demetrios Lafis](https://linkedin.com/in/gabriel-demetrios-lafis)
+
+## Licenca / License
+
+MIT License - veja [LICENSE](LICENSE) / see [LICENSE](LICENSE).
