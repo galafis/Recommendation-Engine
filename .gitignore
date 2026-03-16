@@ -7,6 +7,17 @@ build/
 .env
 venv/
 .venv/
+
+# R
+.Rhistory
+.Rdata
+.Rproj.user
+.RData
+.Renviron
+*.Rproj
+
+# OS / IDE
 .DS_Store
 .idea/
 .vscode/
+*.log
